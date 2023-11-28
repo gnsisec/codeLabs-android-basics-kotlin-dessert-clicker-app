@@ -18,6 +18,7 @@ package com.example.android.dessertclicker
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -25,6 +26,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import com.example.android.dessertclicker.databinding.ActivityMainBinding
+
+const val TAG = "MainActivity"
+const val KEY_REVENUE = "revenue_key"
+const val KEY_DESERT_SOLD = "dessert_sold_key"
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,26 +51,35 @@ class MainActivity : AppCompatActivity() {
     // Create a list of all desserts, in order of when they start being produced
     private val allDesserts = listOf(
             Dessert(R.drawable.cupcake, 5, 0),
-            Dessert(R.drawable.donut, 10, 5),
-            Dessert(R.drawable.eclair, 15, 20),
-            Dessert(R.drawable.froyo, 30, 50),
-            Dessert(R.drawable.gingerbread, 50, 100),
-            Dessert(R.drawable.honeycomb, 100, 200),
-            Dessert(R.drawable.icecreamsandwich, 500, 500),
-            Dessert(R.drawable.jellybean, 1000, 1000),
-            Dessert(R.drawable.kitkat, 2000, 2000),
-            Dessert(R.drawable.lollipop, 3000, 4000),
-            Dessert(R.drawable.marshmallow, 4000, 8000),
-            Dessert(R.drawable.nougat, 5000, 16000),
-            Dessert(R.drawable.oreo, 6000, 20000)
+            Dessert(R.drawable.donut, 10, 2),
+            Dessert(R.drawable.eclair, 15, 4),
+            Dessert(R.drawable.froyo, 30, 6),
+            Dessert(R.drawable.gingerbread, 50, 8),
+            Dessert(R.drawable.honeycomb, 100, 10),
+            Dessert(R.drawable.icecreamsandwich, 500, 11),
+            Dessert(R.drawable.jellybean, 1000, 12),
+            Dessert(R.drawable.kitkat, 2000, 13),
+            Dessert(R.drawable.lollipop, 3000, 14),
+            Dessert(R.drawable.marshmallow, 4000, 15),
+            Dessert(R.drawable.nougat, 5000, 16),
+            Dessert(R.drawable.oreo, 6000, 17)
     )
     private var currentDessert = allDesserts[0]
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        logDebug("onSaveInstance Called")
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESERT_SOLD, dessertsSold)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        logDebug("onCreate called")
+
         // Use Data Binding to get reference to the views
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
         binding.dessertButton.setOnClickListener {
             onDessertClicked()
         }
@@ -76,6 +90,45 @@ class MainActivity : AppCompatActivity() {
 
         // Make sure the correct dessert is showing
         binding.dessertButton.setImageResource(currentDessert.imageId)
+
+        if (savedInstanceState != null) {
+            revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
+            dessertsSold = savedInstanceState.getInt(KEY_DESERT_SOLD, 0)
+            showCurrentDessert()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        logDebug("onStart called")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        logDebug("onRestart called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logDebug("onResume called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        logDebug("onPause called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        logDebug("onStop called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        logDebug("onDestroy called")
+    }
+    private fun logDebug(log: String) {
+        Log.d(TAG, log)
     }
 
     /**
